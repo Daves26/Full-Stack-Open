@@ -5,12 +5,12 @@ import Countries from "./components/Countries"
 
 function App() {
   const [search, setSearch] = useState('')
-  const [countriesData, setCountriesData] = useState([])
+  const [countryList, setCountryList] = useState([])
+  const [countriesToDisplay, setCountriesToDisplay] = useState([])
 
   useEffect(() => {
     countriesService.getAll().then(response => {
-      console.log(response)
-      setCountriesData(response)
+      setCountryList(response)
     }).catch(error => {
       console.error('Error fetching data:', error)
     })
@@ -21,6 +21,12 @@ function App() {
     setSearch(event.target.value)
   }
 
+  useEffect(() => {
+    setCountriesToDisplay(countryList.filter(country => 
+      country.name.common.toLowerCase().includes(search.toLowerCase())
+    ))
+  }, [search])
+
   return (
     <div>
       <form>
@@ -28,7 +34,7 @@ function App() {
         <input autoFocus autoComplete="off" value={search} onChange={handleSearch}></input>
       </form>
       <div>
-        <Countries countriesToDisplay={countriesData}/>
+        <Countries countriesToDisplay={countriesToDisplay}/>
       </div>
     </div>
   )
